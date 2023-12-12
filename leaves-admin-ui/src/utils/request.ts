@@ -65,9 +65,9 @@ service.interceptors.response.use((response) => {
       }
     }
   }
+  ElMessage.error(error.message || '系统出错')
   return Promise.reject(error.message || 'Error')
-},
-)
+})
 
 // 导出 axios 实例
 export default service
