@@ -64,8 +64,9 @@ service.interceptors.response.use((response) => {
         ElMessage.error(error.message || '系统出错')
       }
     }
+  } else {
+    ElMessage.error(error.message || '系统出错')
   }
-  ElMessage.error(error.message || '系统出错')
   return Promise.reject(error.message || 'Error')
 })
 
