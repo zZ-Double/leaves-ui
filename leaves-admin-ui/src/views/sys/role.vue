@@ -1,22 +1,20 @@
 <template>
     <div class="app-container">
         <div class="search-container">
-            <el-form>
-                <el-form ref="queryFormRef" :model="queryParams" :inline="true">
-                    <el-form-item label="关键字" prop="keywords">
-                        <el-input v-model="queryParams.keywords" placeholder="角色名称" clearable @keyup.enter="handleQuery" />
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" @click="handleQuery">
-                            <template #icon><i-ep-search /></template><!-- 自动导入图标使用方法 -->
-                            搜索
-                        </el-button>
-                        <el-button @click="resetQuery">
-                            <template #icon><i-ep-refresh /></template>
-                            重置
-                        </el-button>
-                    </el-form-item>
-                </el-form>
+            <el-form ref="queryFormRef" :model="queryParams" :inline="true">
+                <el-form-item label="关键字" prop="keywords">
+                    <el-input v-model="queryParams.keywords" placeholder="角色名称" clearable @keyup.enter="handleQuery" />
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="handleQuery">
+                        <template #icon><i-ep-search /></template><!-- 自动导入图标使用方法 -->
+                        搜索
+                    </el-button>
+                    <el-button @click="resetQuery">
+                        <template #icon><i-ep-refresh /></template>
+                        重置
+                    </el-button>
+                </el-form-item>
             </el-form>
         </div>
 
@@ -39,7 +37,7 @@
                 <el-table-column prop="roleCode" label="角色编码" min-width="80" />
                 <el-table-column prop="status" label="状态" width="100">
                     <template #default="scope">
-                        <el-tag v-if="scope.row.status == 'ENABLE'" type="success">正常</el-tag>
+                        <el-tag v-if="scope.row.status == 'ENABLE'" type="success">启用</el-tag>
                         <el-tag v-else type="info">禁用</el-tag>
                     </template>
                 </el-table-column>
@@ -86,7 +84,7 @@
 
                 <el-form-item label="状态" prop="status">
                     <el-radio-group v-model="formData.status">
-                        <el-radio label="ENABLE">正常</el-radio>
+                        <el-radio label="ENABLE">启用</el-radio>
                         <el-radio label="DISABLE">停用</el-radio>
                     </el-radio-group>
                 </el-form-item>

@@ -10,7 +10,7 @@
                 </el-form-item>
                 <el-form-item label="部门状态" prop="status">
                     <el-select v-model="queryParams.status" placeholder="部门状态" clearable>
-                        <el-option value="ENABLE" label="正常" />
+                        <el-option value="ENABLE" label="启用" />
                         <el-option value="DISABLE" label="禁用" />
                     </el-select>
                 </el-form-item>
@@ -45,7 +45,7 @@
                 <el-table-column prop="deptName" label="部门名称" min-width="200" />
                 <el-table-column prop="status" label="状态" width="100">
                     <template #default="scope">
-                        <el-tag v-if="scope.row.status == 'ENABLE'" type="success">正常</el-tag>
+                        <el-tag v-if="scope.row.status == 'ENABLE'" type="success">启用</el-tag>
                         <el-tag v-else type="info">禁用</el-tag>
                     </template>
                 </el-table-column>
@@ -101,7 +101,7 @@
                     </el-form-item>
                     <el-form-item label="部门状态" style="flex: 1;">
                         <el-radio-group v-model="formData.status">
-                            <el-radio label="ENABLE">正常</el-radio>
+                            <el-radio label="ENABLE">启用</el-radio>
                             <el-radio label="DISABLE">禁用</el-radio>
                         </el-radio-group>
                     </el-form-item>

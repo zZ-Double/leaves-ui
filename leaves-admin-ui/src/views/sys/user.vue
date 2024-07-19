@@ -181,12 +181,11 @@
 </template>
 
 <script setup lang="ts">
-import { Option } from '@/api/sys/menu/types';
-import { deptOptions } from '@/api/sys/dept';
+import { Option } from '@/api/sys/menu/types'
+import { deptOptions } from '@/api/sys/dept'
 import { roleOptions } from '@/api/sys/role'
-import { getUser, removeUser, updateUser, saveUser, resetPasswd } from '@/api/sys/user'
-import { UserForm, UserQuery, UserType } from "@/api/sys/user/types";
-import { userPages } from '@/api/sys/user';
+import { userPages, getUser, removeUser, updateUser, saveUser, resetPasswd } from '@/api/sys/user'
+import { UserForm, UserQuery, UserType } from "@/api/sys/user/types"
 
 let queryFormRef = ref()
 let dataFormRef = ref()
