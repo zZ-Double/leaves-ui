@@ -15,4 +15,13 @@ export interface TenantType {
     createTime: string;
 }
 
+export interface TenantForm {
+    id?: string;
+    tenantName: string;
+    beginDate: string;
+    endDate: string;
+    status: string;
+    dateRange: string;
+}
+
 export type TenantPageResult = PageResult<TenantType[]>;

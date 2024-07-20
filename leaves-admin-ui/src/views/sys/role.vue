@@ -85,7 +85,7 @@
                 <el-form-item label="状态" prop="status">
                     <el-radio-group v-model="formData.status">
                         <el-radio label="ENABLE">启用</el-radio>
-                        <el-radio label="DISABLE">停用</el-radio>
+                        <el-radio label="DISABLE">禁用</el-radio>
                     </el-radio-group>
                 </el-form-item>
 
