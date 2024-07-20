@@ -107,7 +107,7 @@ import { TenantQuery, TenantType, TenantForm } from '@/api/sys/tenant/types'
 import { pageTenant, getTenant, saveTenant, updateTenant, removeTenant } from '@/api/sys/tenant/index'
 import Pagination from '@/components/Pagination/index.vue'
 
-
+// 测试git提交
 let queryFormRef = ref()
 let dataFormRef = ref()
 
