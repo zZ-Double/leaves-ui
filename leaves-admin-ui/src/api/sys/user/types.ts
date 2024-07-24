@@ -8,6 +8,7 @@ export interface UserInfo {
   avatar: string;
   roles: string[];
   perms: string[];
+  tenantId?: string;
 }
 
 /**

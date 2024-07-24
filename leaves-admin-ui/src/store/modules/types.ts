@@ -28,6 +28,7 @@ export interface UserState {
   avatar: string;
   roles: string[];
   perms: string[];
+  tenantId?: string;
 }
 
 export interface TagView extends Partial<RouteLocationNormalized> {

@@ -281,7 +281,6 @@ function openMenuDialog(row: RoleVO) {
             // 回显角色已拥有的菜单
             getRoleMenuIds(id).then(({ data }) => {
                 const checkedMenuIds = data
-                console.log("勾选权限", checkedMenuIds)
                 checkedMenuIds.forEach((menuId) =>
                     menuRef.value.setChecked(menuId, true, false)
                 )

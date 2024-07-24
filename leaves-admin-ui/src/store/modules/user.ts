@@ -12,6 +12,7 @@ const useUserStore = defineStore({
   state: (): UserState => ({
     token: localStorage.get_token() || '',
     nickname: '',
+    tenantId: '',
     avatar: '',
     roles: [],
     perms: [],
@@ -32,15 +33,13 @@ const useUserStore = defineStore({
           grant_type: grant_type,
           verifyCode: verifyCode,
           verifyCodeKey: verifyCodeKey,
-        })
-          .then((response) => {
+        }).then((response) => {
             const { access_token, token_type } = response.data
             const accessToken = token_type + ' ' + access_token
             localStorage.set_token(accessToken)
             this.token = accessToken
             resolve(access_token)
-          })
-          .catch((error) => {
+          }).catch((error) => {
             reject(error)
           })
       })
@@ -55,7 +54,7 @@ const useUserStore = defineStore({
             if (!data) {
               return reject('Verification failed, please Login again.');
             }
-            const { nickName, avatar, roles, perms } = data;
+            const { nickName, avatar, roles, perms, tenantId } = data;
             if (!roles || roles.length <= 0) {
               reject('getUserInfo: roles must be a non-null array!');
             }
@@ -63,6 +62,8 @@ const useUserStore = defineStore({
             this.avatar = avatar;
             this.roles = roles;
             this.perms = perms;
+            this.tenantId = tenantId
+            localStorage.set("tenantId", tenantId)
             resolve(data);
           })
           .catch((error) => {

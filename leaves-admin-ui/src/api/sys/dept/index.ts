@@ -18,10 +18,13 @@ export function listDepts(queryParams: Query): AxiosPromise<DeptVO[]> {
 /**
  * 下拉列表
  */
-export function deptOptions(): AxiosPromise<Option[]> {
+export function deptOptions(tenantId?: string): AxiosPromise<Option[]> {
     return request({
         url: sys_base_url + 'dept/options',
-        method: 'get'
+        method: 'get',
+        params: {
+            tenantId
+        }
     })
 }
 

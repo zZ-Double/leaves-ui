@@ -129,11 +129,6 @@
                     <el-input v-model="formData.phoneNumber" placeholder="请输入手机号码" maxlength="11" />
                 </el-form-item>
 
-                <el-form-item label="所属部门" prop="deptId">
-                    <el-tree-select v-model="formData.deptId" placeholder="请选择所属部门" :data="deptList" filterable
-                        check-strictly :render-after-expand="false" />
-                </el-form-item>
-
                 <el-form-item label="状态" prop="status">
                     <el-radio-group v-model="formData.status">
                         <el-radio label="ENABLE">启用</el-radio>
@@ -147,6 +142,16 @@
                         <el-radio label="FEMALE">女</el-radio>
                         <el-radio label="UN_KNOW">未知</el-radio>
                     </el-radio-group>
+                </el-form-item>
+
+                <el-form-item label="所属租户" prop="deptId">
+                    <el-tree-select v-model="formData.deptId" placeholder="请选择所属租户" :data="tenantList" filterable
+                        check-strictly :render-after-expand="false" @change="tenantChange($event)"/>
+                </el-form-item>
+
+                <el-form-item label="所属部门" prop="deptId">
+                    <el-tree-select v-model="formData.deptId" placeholder="请选择所属部门" :data="deptList" filterable
+                        check-strictly :render-after-expand="false" />
                 </el-form-item>
 
                 <el-form-item label="角色" prop="roleIds">
@@ -182,14 +187,17 @@
 
 <script setup lang="ts">
 import { Option } from '@/api/sys/menu/types'
+import { tenantOptions } from '@/api/sys/tenant'
 import { deptOptions } from '@/api/sys/dept'
 import { roleOptions } from '@/api/sys/role'
 import { userPages, getUser, removeUser, updateUser, saveUser, resetPasswd } from '@/api/sys/user'
 import { UserForm, UserQuery, UserType } from "@/api/sys/user/types"
+import useStore from '@/store';
 
 let queryFormRef = ref()
 let dataFormRef = ref()
 let searchDeptName = ref()
+let tenantList = ref<Option[]>([])
 let deptList = ref<Option[]>([])
 let roleList = ref<Option[]>([])
 let loading = ref(false)
@@ -247,11 +255,21 @@ const rules = reactive({
     ],
 });
 
+// 租户下拉
+function handleTenantOptions() {
+    tenantOptions().then(({ data }) => {
+        tenantList.value = data
+    })
+}
 
+function tenantChange(tenantId: any) {
+    handleDeptOptions(tenantId)
+    roleOptopns(tenantId)
+}
 
 // 部门下拉
-function handleDeptOptions() {
-    deptOptions().then(({ data }) => {
+function handleDeptOptions(tenantId?: any) {
+    deptOptions(tenantId).then(({ data }) => {
         deptList.value = data
     })
 }
@@ -286,8 +304,7 @@ function resetQuery() {
 }
 
 function openDialog(id?: any) {
-    handleDeptOptions()
-    roleOptopns()
+    handleTenantOptions()
     state.visible = true;
     if (id) {
         state.title = "修改用户";
@@ -328,8 +345,8 @@ function handleDelete(id?: any) {
 }
 
 // 角色下拉选项
-function roleOptopns() {
-    roleOptions().then(({ data }) => {
+function roleOptopns(tenantId?: any) {
+    roleOptions(tenantId).then(({ data }) => {
         roleList.value = data
     })
 }
@@ -418,6 +435,8 @@ const ellipsis = (value: string, len: number) => {
     }
     return value
 }
+
+
 
 onMounted(() => {
     handleDeptOptions()

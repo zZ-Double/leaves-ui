@@ -52,13 +52,16 @@
                     </template>
                 </el-table-column>
                 <el-table-column label="创建时间" align="center" prop="createTime" width="150" />
-                <el-table-column label="操作" fixed="right" align="left" width="150">
+                <el-table-column label="操作" fixed="right" align="left" width="200">
                     <template #default="scope">
                         <div v-if="scope.row.roleCode !== 'ROOT'">
+                            <el-button v-hasPerm="['sys:tenant:menus:save']" type="primary" link size="small"
+                                @click.stop="openMenuDialog(scope.row)"><i-ep-position />分配权限
+                            </el-button>
                             <el-button v-hasPerm="['sys:tenant:update']" type="primary" link size="small"
                                 @click.stop="openDialog(scope.row.id)"><i-ep-edit />编辑
                             </el-button>
-                            <el-button v-hasPerm="['sys:tenant:remove']" type="primary" link size="small"
+                            <el-button v-hasPerm="['sys:tenant:remove']" type="danger" link size="small"
                                 @click.stop="handleDelete(scope.row.id)"><i-ep-delete />删除
                             </el-button>
                         </div>
@@ -99,23 +102,46 @@
                 </div>
             </template>
         </el-dialog>
+
+        <!-- 分配菜单弹窗  -->
+        <el-dialog v-model="state.menuDialogVisible" :title="'【' + state.tenantName + '】权限分配'" width="800px">
+            <el-scrollbar v-loading="loading" max-height="600px">
+                <el-tree ref="menuRef" node-key="value" show-checkbox :data="menuList" :default-expand-all="true">
+                    <template #default="{ data }">
+                        {{ data.label }}
+                    </template>
+                </el-tree>
+            </el-scrollbar>
+
+            <template #footer>
+                <div class="dialog-footer">
+                    <el-button type="primary" @click="handleRoleMenuSubmit">确 定</el-button>
+                    <el-button @click="state.menuDialogVisible = false">取 消</el-button>
+                </div>
+            </template>
+        </el-dialog>
+
     </div>
 </template>
 
 <script setup lang="ts">
 import { TenantQuery, TenantType, TenantForm } from '@/api/sys/tenant/types'
-import { pageTenant, getTenant, saveTenant, updateTenant, removeTenant } from '@/api/sys/tenant/index'
+import { pageTenant, getTenant, saveTenant, updateTenant, removeTenant, getTenantMenuIds, updateTenantMenus } from '@/api/sys/tenant/index'
 import Pagination from '@/components/Pagination/index.vue'
+import { Option } from '@/api/sys/menu/types';
+import { menuOptions } from '@/api/sys/menu';
 
 // 测试git提交
 let queryFormRef = ref()
 let dataFormRef = ref()
+let menuRef = ref()
 
 
 let ids = ref<string[]>([])
 let loading = ref(false)
 let tenantList = ref<TenantType[]>([])
 let total = ref(0)
+let menuList = ref<Option[]>([])
 
 const queryParams = reactive<TenantQuery>({
     keywords: '',
@@ -128,7 +154,7 @@ const state = reactive({
     visible: false,
     title: '',
     roleId: '',
-    roleName: '',
+    tenantName: '',
     menuDialogVisible: false,
     menuDialogTitle: ''
 
@@ -241,7 +267,46 @@ function handleSubmit() {
             }
         }
     });
+}
 
+/** 打开分配菜单弹窗 */
+function openMenuDialog(row: TenantType) {
+    const id = row.id;
+    if (id) {
+        state.roleId = id
+        state.tenantName = row.tenantName
+        state.menuDialogVisible = true;
+        loading.value = true;
+
+        // 获取所有的菜单
+        menuOptions().then(({ data }) => {
+            menuList.value = data
+            // 回显角色已拥有的菜单
+            getTenantMenuIds(id).then(({ data }) => {
+                const checkedMenuIds = data
+                checkedMenuIds.forEach((menuId) =>
+                    menuRef.value.setChecked(menuId, true, false)
+                )
+            }).finally(() => {
+                loading.value = false;
+            })
+        });
+    }
+}
+
+function handleRoleMenuSubmit() {
+    const roleId = state.roleId;
+    if (roleId) {
+        const checkedMenuIds: string = menuRef.value.getCheckedNodes(false, true).map((node: any) => node.value)
+        loading.value = true;
+        updateTenantMenus(roleId, checkedMenuIds).then(() => {
+            ElMessage.success("分配权限成功");
+            state.menuDialogVisible = false;
+            resetQuery();
+        }).finally(() => {
+            loading.value = false;
+        })
+    }
 }
 
 onMounted(() => {

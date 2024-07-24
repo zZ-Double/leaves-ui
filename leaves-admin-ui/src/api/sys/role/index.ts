@@ -58,9 +58,12 @@ export function updateRoleMenus(roleId: string, data: string): AxiosPromise<any>
     });
 }
 
-export function roleOptions():AxiosPromise<Option[]> {
+export function roleOptions(tenantId?: any):AxiosPromise<Option[]> {
     return request({
         url: sys_base_url + 'role/options',
-        method: 'get'
+        method: 'get',
+        params: {
+            tenantId
+        }
     })
 }
